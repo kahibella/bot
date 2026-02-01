@@ -2,6 +2,10 @@
 
 Using Telegram Bot API to create a bot that can send messages to a group.
 
+Features:
+
+- fetch and sent hot news from hacker news
+
 ## setup
 
 ### create a bot
@@ -19,6 +23,18 @@ Using Telegram Bot API to create a bot that can send messages to a group.
 3. make the bot an admin of the group
 4. get chat id of the group as described in the next section
 5. paste the chat id into the `.env` file with parameter `TELEGRAM_GROUP_CHAT_ID=`
+
+## run the bot
+
+Using python 3.13
+
+```shell
+poetry install
+```
+
+```shell
+poetry run python app.py
+```
 
 ## Bot method
 
@@ -85,10 +101,75 @@ python -m flask run --debug
 
 #### Endpoints
 
-- POST `/news` - hot news from hacker news
-- POST `/bot` - send hot news to a chat group
+#### POST `/`
 
-## linter
+send message to a chat group
+
+body parameters:
+
+- `message`: message text. required.
+
+#### GET `/news`
+
+fetch hot news from hacker news and send to a chat group
+
+query parameters:
+
+- `points`: points threshold. optional. default is 200.
+- `created_at`: created at threshold. optional. default is 12 hours.
+
+## Deploy to Cloudflare Workers
+
+This project includes a `worker.py` file that allows deployment to Cloudflare Workers.
+
+### Prerequisites
+
+1. Install Wrangler CLI:
+
+```shell
+npm install -g wrangler
+```
+
+2. Login to Cloudflare:
+
+```shell
+wrangler login
+```
+
+### Setup Environment Variables
+
+Set your secrets using Wrangler:
+
+```shell
+wrangler secret put TELEGRAM_TOKEN
+# Enter your Telegram bot token when prompted
+
+wrangler secret put TELEGRAM_GROUP_CHAT_ID
+# Enter your Telegram group chat ID when prompted
+```
+
+### Deploy Steps
+
+1. Generate requirements.txt:
+
+```shell
+poetry export -f requirements.txt --output requirements.txt --without-hashes
+```
+
+2. Deploy to Cloudflare Workers:
+
+```shell
+wrangler deploy
+```
+
+### Worker Endpoints
+
+The Worker provides the same API as the Flask app:
+
+- **POST /** - Send message to chat group (form data: `message`)
+- **POST /news** - Fetch and send hot news (JSON body: `points`, `created_at`)
+
+## Linter
 
 ### black
 

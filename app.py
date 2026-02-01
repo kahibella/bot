@@ -15,7 +15,8 @@ app = Flask(__name__)
 
 @app.route("/", methods=["POST"])
 def message(bot: Bot) -> tuple[dict[str, str], int]:
-    """Bot endpoint.
+    """
+    Bot endpoint to send message to a chat group.
     body: {"message": "<text>"}
     """
     message_ = request.form.get("message", None)
@@ -27,11 +28,15 @@ def message(bot: Bot) -> tuple[dict[str, str], int]:
     return result.payload or {}, 500
 
 
-@app.route("/news", methods=["GET"])
+@app.route("/news", methods=["POST"])
 def hot_news(bot: Bot, news: News) -> tuple[dict[str, str], int]:
-    """Hot news endpoint."""
-    points_threshold = request.args.get("points", None, type=int)
-    created_at_threshold_sec = request.args.get("created_at", None, type=int)
+    """
+    Hot news endpoint to fetch hot news from hacker news and send to a chat group.
+    body: `{"points": <points>, "created_at": <created_at>}`
+    """
+    body = request.form
+    points_threshold = body.get("points", type=int)
+    created_at_threshold_sec = body.get("created_at", type=int)
 
     result: Result = send_hot_news(
         bot=bot,

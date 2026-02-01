@@ -17,9 +17,16 @@ class Bot:
             return False
 
     def send_message(self, chat_id: int, text: str) -> None:
+        """Send message to a chat group.
+        :param chat_id: Chat ID
+        :param text: Message text
+        """
         self.telegram.send_message(chat_id=chat_id, text=text)
 
     def get_first_group_chat_id(self) -> int | None:
+        """Get the first group chat ID.
+        :return: Group chat ID
+        """
         group = self.telegram.get_updates()
         if len(group.root) == 0:
             return None
