@@ -1,3 +1,4 @@
+import os
 from time import time
 from dataclasses import dataclass
 
@@ -14,8 +15,6 @@ class News:
     hacker_news = HackerNews()
 
     cache_expire_sec: int = 60 * 60  # 1 hour
-    default_points_threshold: int = 200
-    default_created_at_threshold_sec: int = 1 * 60 * 60  # 1 hour
 
     @staticmethod
     def current_timestamp_sec() -> int:
@@ -23,13 +22,9 @@ class News:
 
     def hot_news(
         self,
-        points_threshold: int | None = None,
-        created_at_threshold_sec: int | None = None,
         bypass_cache: bool = False,
     ) -> HitModel:
         """get hot news from hacker news
-        :param points_threshold: points threshold
-        :param created_at_threshold_sec: created at threshold
         :param bypass_cache: if True, bypass cache. cache_expire_sec is ignored.
         """
         return self.hacker_news.search_by_date(
@@ -38,13 +33,12 @@ class News:
                 HackerNewsNumericFilter(
                     key=HackerNewsNumericFiltersKey.POINTS,
                     condition=">=",
-                    value=points_threshold or self.default_points_threshold,
+                    value=int(os.getenv("NEWS_POINTS_THRESHOLD") or 200),
                 ),
                 HackerNewsNumericFilter(
                     key=HackerNewsNumericFiltersKey.CREATED_AT_I,
                     condition=">=",
-                    value=self.current_timestamp_sec()
-                    - (created_at_threshold_sec or self.default_created_at_threshold_sec),
+                    value=self.current_timestamp_sec() - (int(os.getenv("NEWS_CREATED_AT_THRESHOLD_SEC") or 3600)),
                 ),
             ],
             bypass_cache=bypass_cache,

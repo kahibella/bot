@@ -5,6 +5,7 @@ from typing import TypeVar
 
 import requests
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 from .results import GetMeResultModel
 from .results import GetUpdatesResultModel
@@ -12,7 +13,7 @@ from .results import SendMessageResultModel
 
 load_dotenv()
 
-T = TypeVar("T", bound="BaseModel")
+T = TypeVar("T", bound=BaseModel)
 
 
 class Telegram:

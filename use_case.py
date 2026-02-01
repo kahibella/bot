@@ -17,20 +17,14 @@ def send_message(bot: Bot, message: str) -> Result:
 def send_hot_news(
     bot: Bot,
     news: News,
-    points_threshold: int | None = None,
-    created_at_threshold_sec: int | None = None,
 ) -> Result:
     """
     Fetch hot news from hacker news and send to a chat group.
     :param bot: Bot instance
     :param news: News instance
-    :param points_threshold: Points threshold
-    :param created_at_threshold_sec: Created at threshold
     :return: Result instance
     """
     hot_news = news.hot_news(
-        points_threshold=points_threshold,
-        created_at_threshold_sec=created_at_threshold_sec,
         bypass_cache=True,
     )
     if not hot_news.has_result():

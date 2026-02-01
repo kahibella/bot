@@ -10,7 +10,7 @@ class Cache:
         self.directory = directory
 
     @staticmethod
-    def default_file_pref() -> str:
+    def default_file_name() -> str:
         now = datetime.now(tz=UTC)
         return f"{now.strftime('%Y%m%d%H%M')}"
 
@@ -22,9 +22,11 @@ class Cache:
         latest_file = files[0]
         return latest_file
 
-    def load_latest_json(self, expire_sec: int = None) -> dict[str, Any] | None:
+    def load_latest_json(self, expire_sec: int | None = None) -> dict[str, Any] | None:
         latest_file = self.latest_file_name()
-        # FIXME(kahi0223): cannot convert if dir includes not json file
+        if latest_file is None:
+            return None
+        # FIXME(kahibella): cannot convert if dir includes not json file
         latest_file_datetime = datetime.strptime(latest_file, "%Y%m%d%H%M.json")
         if expire_sec is not None:
             if (datetime.now() - latest_file_datetime).total_seconds() > expire_sec:
@@ -32,7 +34,7 @@ class Cache:
         with open(f"{self.directory}/{latest_file}", "r") as file:
             return json.load(file)
 
-    def save_json(self, data: dict[str, Any], file_name: str = None) -> None:
-        file_name = file_name or f"{self.default_file_pref()}.json"
+    def save_json(self, data: dict[str, Any], file_name: str | None = None) -> None:
+        file_name = file_name or f"{self.default_file_name()}.json"
         with open(f"{self.directory}/{file_name}", "x") as file:
             json.dump(data, file, indent=4)

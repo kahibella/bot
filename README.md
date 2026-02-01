@@ -24,6 +24,14 @@ Features:
 4. get chat id of the group as described in the next section
 5. paste the chat id into the `.env` file with parameter `TELEGRAM_GROUP_CHAT_ID=`
 
+### set environment variables
+
+```shell
+cp .env.example .env
+```
+
+And set the values.
+
 ## run the bot
 
 Using python 3.13
@@ -113,65 +121,11 @@ body parameters:
 
 - `message`: message text. required.
 
-#### GET `/news`
+#### POST `/news`
 
 fetch hot news from hacker news and send to a chat group
 
-query parameters:
-
-- `points`: points threshold. optional. default is 200.
-- `created_at`: created at threshold. optional. default is 12 hours.
-
-## Deploy to Cloudflare Workers
-
-This project includes a `worker.py` file that allows deployment to Cloudflare Workers.
-
-### Prerequisites
-
-1. Install Wrangler CLI:
-
-```shell
-npm install -g wrangler
-```
-
-2. Login to Cloudflare:
-
-```shell
-wrangler login
-```
-
-### Setup Environment Variables
-
-Set your secrets using Wrangler:
-
-```shell
-wrangler secret put TELEGRAM_TOKEN
-# Enter your Telegram bot token when prompted
-
-wrangler secret put TELEGRAM_GROUP_CHAT_ID
-# Enter your Telegram group chat ID when prompted
-```
-
-### Deploy Steps
-
-1. Generate requirements.txt:
-
-```shell
-poetry export -f requirements.txt --output requirements.txt --without-hashes
-```
-
-2. Deploy to Cloudflare Workers:
-
-```shell
-wrangler deploy
-```
-
-### Worker Endpoints
-
-The Worker provides the same API as the Flask app:
-
-- **POST /** - Send message to chat group (form data: `message`)
-- **POST /news** - Fetch and send hot news (JSON body: `points`, `created_at`)
+body parameters: None
 
 ## Linter
 

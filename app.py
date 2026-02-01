@@ -32,17 +32,10 @@ def message(bot: Bot) -> tuple[dict[str, str], int]:
 def hot_news(bot: Bot, news: News) -> tuple[dict[str, str], int]:
     """
     Hot news endpoint to fetch hot news from hacker news and send to a chat group.
-    body: `{"points": <points>, "created_at": <created_at>}`
     """
-    body = request.form
-    points_threshold = body.get("points", type=int)
-    created_at_threshold_sec = body.get("created_at", type=int)
-
     result: Result = send_hot_news(
         bot=bot,
         news=news,
-        points_threshold=points_threshold,
-        created_at_threshold_sec=created_at_threshold_sec,
     )
     if result.status == ResultStatus.OK:
         return result.payload or {}, 200

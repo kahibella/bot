@@ -53,8 +53,8 @@ class HackerNews:
 
     def create_search_by_date_url(
         self,
-        tags: HackerNewsTag | list[HackerNewsTag] = None,
-        numeric_filters: list[HackerNewsNumericFilter] = None,
+        tags: HackerNewsTag | list[HackerNewsTag] | None = None,
+        numeric_filters: list[HackerNewsNumericFilter] | None = None,
     ) -> str:
         """Create url for search by date
         :param tags: story, comment, poll, pollopt, show_hn, ask_hn, front_page
@@ -69,18 +69,15 @@ class HackerNews:
                 tags_query = tags.value
             url += f"?tags={tags_query}"
         if numeric_filters:
-            url += (
-                "&numericFilters="
-                f"{','.join(map(lambda filter_: filter_.to_param(), numeric_filters))}"
-            )
+            url += "&numericFilters=" f"{','.join(map(lambda filter_: filter_.to_param(), numeric_filters))}"
         return url
 
     def search_by_date(
         self,
-        tags: HackerNewsTag | list[HackerNewsTag] = None,
-        numeric_filters: list[HackerNewsNumericFilter] = None,
+        tags: HackerNewsTag | list[HackerNewsTag] | None = None,
+        numeric_filters: list[HackerNewsNumericFilter] | None = None,
         bypass_cache: bool = False,
-        cache_expire_sec: int = None,
+        cache_expire_sec: int | None = None,
     ) -> HitModel:
         """Search by date
         :param tags: story, comment, poll, pollopt, show_hn, ask_hn, front_page
@@ -100,10 +97,9 @@ class HackerNews:
                 timeout=self.TIME_OUT,
             )
             if response_.status_code < 200 or 300 <= response_.status_code:
-                raise ValueError(
-                    f"Failed to fetch search_by_date. Code: {response_.status_code}"
-                )
+                raise ValueError(f"Failed to fetch search_by_date. Code: {response_.status_code}")
             result = response_.json()
             if not bypass_cache:
                 self.cache.save_json(data=result)
+
         return HitModel.model_validate(obj=result)
