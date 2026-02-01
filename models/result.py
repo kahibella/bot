@@ -1,7 +1,9 @@
 from dataclasses import dataclass
+from typing import Any
+from enum import Enum
 
 
-class ResultStatus:
+class ResultStatus(str, Enum):
     OK = "OK"
     ERROR = "ERROR"
 
@@ -9,4 +11,4 @@ class ResultStatus:
 @dataclass
 class Result:
     status: ResultStatus
-    payload: dict = None
+    payload: dict[str, Any] | None = None

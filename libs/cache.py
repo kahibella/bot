@@ -33,7 +33,6 @@ class Cache:
             return json.load(file)
 
     def save_json(self, data: dict[str, Any], file_name: str = None) -> None:
-        if file_name is None:
-            file_name = f"{self.default_file_pref()}.json"
+        file_name = file_name or f"{self.default_file_pref()}.json"
         with open(f"{self.directory}/{file_name}", "x") as file:
             json.dump(data, file, indent=4)

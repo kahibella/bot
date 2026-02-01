@@ -23,8 +23,8 @@ def message(bot: Bot) -> tuple[dict[str, str], int]:
         return {"message": "No message"}, 400
     result: Result = send_message(bot=bot, message=message_)
     if result.status == ResultStatus.OK:
-        return result.payload, 200
-    return result.payload, 500
+        return result.payload or {}, 200
+    return result.payload or {}, 500
 
 
 @app.route("/news", methods=["GET"])
@@ -40,8 +40,8 @@ def hot_news(bot: Bot, news: News) -> tuple[dict[str, str], int]:
         created_at_threshold_sec=created_at_threshold_sec,
     )
     if result.status == ResultStatus.OK:
-        return result.payload, 200
-    return result.payload, 500
+        return result.payload or {}, 200
+    return result.payload or {}, 500
 
 
 FlaskInjector(app=app, modules=[AppModule()])
