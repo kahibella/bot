@@ -15,7 +15,7 @@ class News:
 
     cache_expire_sec: int = 60 * 60  # 1 hour
     default_points_threshold: int = 200
-    default_created_at_threshold_sec: int = 12 * 60 * 60  # 12 hours
+    default_created_at_threshold_sec: int = 1 * 60 * 60  # 1 hour
 
     @staticmethod
     def current_timestamp_sec() -> int:
@@ -44,10 +44,7 @@ class News:
                     key=HackerNewsNumericFiltersKey.CREATED_AT_I,
                     condition=">=",
                     value=self.current_timestamp_sec()
-                    - (
-                        created_at_threshold_sec
-                        or self.default_created_at_threshold_sec
-                    ),
+                    - (created_at_threshold_sec or self.default_created_at_threshold_sec),
                 ),
             ],
             bypass_cache=bypass_cache,
