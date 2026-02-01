@@ -33,7 +33,11 @@ poetry install
 ```
 
 ```shell
-poetry run python app.py
+# Development
+poetry run python -m flask run --debug
+
+# Production
+poetry run gunicorn app:app
 ```
 
 ## Bot method
